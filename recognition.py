@@ -3,6 +3,9 @@ import io
 import requests
 import os
 import statistics
+import pickle
+
+FILE_NAME_ENCODING_SET = "encoding_set.dat"
 
 def load_image(url):
     online_file = io.BytesIO(requests.get(url).content)
@@ -49,15 +52,25 @@ def get_encoding_set():
 
     return encoding_set
 
-
-def find(url, tolerance=0.35):
+def save_encoding_set():
     encoding_set = get_encoding_set()
+    
+    with open(FILE_NAME_ENCODING_SET, 'wb') as file:
+        pickle.dump(encoding_set, file)
+
+def load_encoding_set():
+    retVal = None
+    with open(FILE_NAME_ENCODING_SET, 'rb') as file:
+        retVal = pickle.load(file)
+
+    return retVal
+
+def test_image(url, encoding_set, tolerance):
+    retVal = None
 
     test_image = load_image(url)
     face_locations = get_face_locations(test_image)
     test_encodings = face_recognition.face_encodings(test_image, known_face_locations=face_locations, model="large")
-
-    retVal = None
 
     for x in range(len(face_locations)):
         test_encoding = test_encodings[x]
@@ -74,3 +87,12 @@ def find(url, tolerance=0.35):
 
     return retVal
 
+def find(url, tolerance=0.35):
+    retVal = None
+
+    encoding_set = load_encoding_set()
+
+    if encoding_set is not None:
+        retVal = test_image(url, encoding_set, tolerance)
+    
+    return retVal
