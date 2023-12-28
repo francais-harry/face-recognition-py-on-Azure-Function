@@ -8,9 +8,12 @@ def load_image(url):
     online_file = io.BytesIO(requests.get(url).content)
     return face_recognition.load_image_file(online_file)
 
+def get_face_locations(image):
+    return face_recognition.face_locations(image)
+
 def load_single_encoding_from_url(url):
     image = load_image(url)
-    face_locations = face_recognition.face_locations(image)
+    face_locations = get_face_locations(image)
 
     if len(face_locations) == 1:
         # set large jitters to get accurate encodings as source data
@@ -51,7 +54,7 @@ def find(url, tolerance=0.35):
     encoding_set = get_encoding_set()
 
     test_image = load_image(url)
-    face_locations = face_recognition.face_locations(test_image)
+    face_locations = get_face_locations(test_image)
     test_encodings = face_recognition.face_encodings(test_image, known_face_locations=face_locations, model="large")
 
     retVal = None
