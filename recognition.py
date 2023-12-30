@@ -83,7 +83,9 @@ def test_image(url, encoding_set, tolerance):
             print(f'key={encoding_key} mean={mean}')
 
             if mean < tolerance:
-                retVal = encoding_key
+                if retVal is None:
+                    retVal = []
+                retVal.append(encoding_key)
 
     return retVal
 
