@@ -7,6 +7,6 @@ local.settings.json
 test
 .venv
 
-source_data/
+source_data/*
 test.py
 train.py
