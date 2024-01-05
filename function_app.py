@@ -22,7 +22,7 @@ def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
     if input_url:
         logging.info('Got request with url= ' + input_url)
         try:
-            result = recognition.find(input_url)
+            result = recognition.find(input_url, tolerance=0.38)
 
             if result is not None:
                 httpResponse = func.HttpResponse(f"{result}")
