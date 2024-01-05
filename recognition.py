@@ -76,16 +76,22 @@ def test_image(url, encoding_set, tolerance):
         test_encoding = test_encodings[x]
         print(f'face location= {face_locations[x]}')
 
+        result_for_face = {}
+
         for encoding_key in encoding_set:
             results = face_recognition.face_distance(encoding_set[encoding_key], test_encoding)
             mean = statistics.mean(results)
 
             print(f'key={encoding_key} mean={mean}')
 
-            if mean < tolerance:
-                if retVal is None:
-                    retVal = []
-                retVal.append(encoding_key)
+            result_for_face[encoding_key] = mean
+
+        if min(result_for_face.values()) < tolerance:
+            if retVal is None:
+                retVal = []
+
+            retVal.append(min(result_for_face, key=result_for_face.get))
+
 
     return retVal
 
